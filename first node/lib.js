@@ -1,13 +1,13 @@
-exports.add = (a, b) => {
+export function add(a, b) {
     return a + b;
 }
-exports.diff = (a, b) => {
+export function diff(a, b) {
     return a - b;
 }
-exports.div = (a, b) => {
+export function div(a, b) {
     return a / b;
 }
-exports.mul = (a, b) => {
+export function mul(a, b) {
     return a * b;
 }
 
