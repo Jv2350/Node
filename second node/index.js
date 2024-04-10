@@ -1,23 +1,34 @@
 const http = require('http');
 const fs = require('fs');
-const index = fs.readFileSync('index.html', 'utf-8')
-const data = fs.readFileSync('data.json', 'utf-8')
 
+const index = fs.readFileSync('index.html', 'utf-8');
+const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+const products = data.products;
 
-// const data = { age: 5 };
 const server = http.createServer((req, res) => {
-    console.log("Server started");
-    // console.log(req.url)
-    // res.setHeader('Dummy', 'Dummy Value'); // header visible inside the network
+    console.log(req.url, req.method);
 
-    // res.end(JSON.stringify(data)); //to display the data into the string format we uses the stringify method of json
+    if (req.url.startsWith('/product')) {
+        const id = req.url.split('/')[2]
+        const product = products.find(p => p.id === (+id))
+        console.log(product)
+        res.setHeader('Content-Type', 'text/html');
+        let modifiedIndex = index.replace('**title**', product.title)
+            .replace('**url**', product.thumbnail)
+            .replace('**price**', product.price)
+            .replace('**rating**', product.rating)
+        res.end(modifiedIndex);
+        return;
+    }
+    //   '/product':
+    //       res.setHeader('Content-Type', 'text/html');
+    //       let modifiedIndex = index.replace('**title**', product.title)
+    //       .replace('**url**', product.thumbnail)
+    //       .replace('**price**', product.price)
+    //       .replace('**rating**', product.rating)
+    //       res.end(modifiedIndex);
+    //       break;
 
-    // res.setHeader('Content-Type', 'application/json') // setting the content type 
-
-    // res.setHeader('Content-Type', 'test/html') // sets the content type as text/html using it browser will take default html
-
-    // res.setHeader('Content-Type', 'application/json') // setting the content type 
-    // res.end(data);
 
 
     switch (req.url) {
@@ -32,7 +43,13 @@ const server = http.createServer((req, res) => {
 
         default:
             res.writeHead(404);
-            res.end("Not found");
+            res.end();
     }
-})
-server.listen(8080)
+
+    console.log('server started  ');
+    //   res.setHeader('Dummy', 'DummyValue');
+
+    //
+});
+
+server.listen(8080);
